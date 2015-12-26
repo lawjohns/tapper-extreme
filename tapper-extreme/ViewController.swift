@@ -9,58 +9,72 @@
 import UIKit
 
 class ViewController: UIViewController {
+    // Control vars
+    var maxTaps: Int = 0, currentTaps: Int = 0
     
-    @IBOutlet weak var logo: UIImageView!
-    @IBOutlet weak var play: UIButton!
-    @IBOutlet weak var picker: UITextField!
-    @IBOutlet weak var coin: UIButton!
-    @IBOutlet weak var count: UILabel!
+    // Start screen
+    @IBOutlet weak var logoImg: UIImageView!
+    @IBOutlet weak var howManyTapsTxt: UITextField!
+    @IBOutlet weak var playButton: UIButton!
     
-    var clickCount: Int = 0, currentCount: Int = 0
+    // In-game
+    @IBOutlet weak var tapButton: UIButton!
+    @IBOutlet weak var tapsLable: UILabel!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-    @IBAction func startGame(sender: AnyObject) {
-        if !isnan(Double(picker.text!)!) {
-            clickCount = Int(picker.text!)!
-            logo.hidden = true
-            play.hidden = true
-            picker.hidden = true
-            coin.hidden = false
-            count.hidden = false
-            count.text = "0"
-            currentCount = 0
+    // Start game
+    @IBAction func onPlayButtonPressed(sender: UIButton!) {
+        
+        if howManyTapsTxt.text != nil && howManyTapsTxt.text != "" {
+            startGame();
         }
     }
     
-    @IBAction func addToCount(sender: AnyObject) {
-        if currentCount < (clickCount - 1) {
-            currentCount++
-            count.text = String(currentCount)
+    @IBAction func onCoinTapped(sender: UIButton!) {
+        currentTaps++;
+        updateCurrentTaps();
+        
+        if isGameOver() {
+            restartGame();
+        }
+    }
+    
+    func updateCurrentTaps() {
+        tapsLable.text = "\(currentTaps) Taps";
+    }
+    
+    func isGameOver() -> Bool {
+        if currentTaps >= maxTaps {
+            return true;
         }
         else {
-            endGame()
+            return false;
         }
     }
     
-    func endGame() {
-        logo.hidden = false
-        play.hidden = false
-        picker.hidden = false
-        coin.hidden = true
-        count.hidden = true
-        picker.text = ""
-        currentCount = 0
-        clickCount = 0
+    func startGame() {
+        logoImg.hidden = true;
+        howManyTapsTxt.hidden = true;
+        playButton.hidden = true;
+        
+        tapButton.hidden = false;
+        tapsLable.hidden = false;
+        
+        maxTaps = Int(howManyTapsTxt.text!)!
+        currentTaps = 0;
+        updateCurrentTaps()
     }
-
+    
+    func restartGame() {
+        maxTaps = 0;
+        tapsLable.text = "";
+        howManyTapsTxt.text = "";
+        
+        logoImg.hidden = false;
+        howManyTapsTxt.hidden = false;
+        playButton.hidden = false;
+        
+        tapButton.hidden = true;
+        tapsLable.hidden = true;
+    }
 }
 
